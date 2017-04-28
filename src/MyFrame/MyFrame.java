@@ -12,14 +12,13 @@ import java.awt.event.MouseListener;
  */
 
 public class MyFrame extends JFrame implements MouseListener {
-    Map Map;
+    private Map map;
     private BackPanel backPanel = new BackPanel(new BorderLayout());
     private JPanel mainPanel = new JPanel(null);
     private JLabel logoLabel, nameLabel, diffLabel;
     private JTextField nameField;
     private MyButton diffBut, exit, play;
-
-    String name;
+    public static int height, width;
 
     private Font font;
     private Font logoFont;
@@ -29,7 +28,7 @@ public class MyFrame extends JFrame implements MouseListener {
         new MyFrame("Pac-Man");
     }
 
-    public MyFrame(String title) throws HeadlessException {
+    private MyFrame(String title) throws HeadlessException {
         super(title);
 
         setLookAndFeel();
@@ -40,13 +39,15 @@ public class MyFrame extends JFrame implements MouseListener {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         gd.setFullScreenWindow(this);
+        height = getHeight();
+        width = getWidth();
 
-        labelFont = new Font("CrackMan", Font.PLAIN, getHeight()/12);
-        logoFont = new Font("CrackMan", Font.BOLD, getHeight()/5);
+        labelFont = new Font("CrackMan", Font.PLAIN, height/12);
+        logoFont = new Font("CrackMan", Font.BOLD, height/5);
         setLogoLabel();
         setNameLabel();
 
-        font = new Font("CrackMan", Font.PLAIN, getHeight()/10);
+        font = new Font("CrackMan", Font.PLAIN, height/10);
         setNameField();
 
         setDiffLabel();
@@ -60,7 +61,7 @@ public class MyFrame extends JFrame implements MouseListener {
         mainPanel.setOpaque(false);
         setContentPane(backPanel);
 
-        backPanel.add(mainPanel);
+        getContentPane().add(mainPanel);
         setVisible(true);
     }
 
@@ -78,7 +79,7 @@ public class MyFrame extends JFrame implements MouseListener {
         logoLabel.setFont(logoFont);
         logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        logoLabel.setSize(getWidth(), getHeight()/4);
+        logoLabel.setSize(width, height/4);
 
         mainPanel.add(logoLabel);
     }
@@ -89,7 +90,7 @@ public class MyFrame extends JFrame implements MouseListener {
         nameLabel.setFont(labelFont);
         nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        nameLabel.setSize(getWidth(), getHeight()/8);
+        nameLabel.setSize(width, height/8);
         nameLabel.setLocation(0, logoLabel.getY() + logoLabel.getHeight());
 
         mainPanel.add(nameLabel);
@@ -101,8 +102,8 @@ public class MyFrame extends JFrame implements MouseListener {
         nameField.setFont(font);
         nameField.setHorizontalAlignment(SwingConstants.CENTER);
 
-        nameField.setSize(getWidth()*3/4, getHeight()/8);
-        nameField.setLocation(getWidth()/2 - nameField.getWidth()/2, nameLabel.getY() + nameLabel.getHeight());
+        nameField.setSize(width*3/4, height/8);
+        nameField.setLocation(width/2 - nameField.getWidth() /2, nameLabel.getY() + nameLabel.getHeight());
 
         mainPanel.add(nameField);
     }
@@ -113,7 +114,7 @@ public class MyFrame extends JFrame implements MouseListener {
         diffLabel.setFont(labelFont);
         diffLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        diffLabel.setSize(getWidth(), getHeight()/8);
+        diffLabel.setSize(width, height/8);
         diffLabel.setLocation(0, nameField.getY() + nameField.getHeight());
 
         mainPanel.add(diffLabel);
@@ -124,8 +125,8 @@ public class MyFrame extends JFrame implements MouseListener {
 
         diffBut.setFont(font);
 
-        diffBut.setSize(getWidth()*3/4, getHeight()/8);
-        diffBut.setLocation(getWidth()/2 - diffBut.getWidth()/2, diffLabel.getY() + diffLabel.getHeight());
+        diffBut.setSize(width*3/4, height/8);
+        diffBut.setLocation(width/2 - diffBut.getWidth() /2, diffLabel.getY() + diffLabel.getHeight());
 
         mainPanel.add(diffBut);
     }
@@ -135,8 +136,8 @@ public class MyFrame extends JFrame implements MouseListener {
 
         exit.setFont(font);
 
-        exit.setSize(getWidth()/4, getHeight()/8);
-        exit.setLocation(exit.getWidth()/2, diffBut.getY() + diffBut.getHeight() + exit.getHeight()/2);
+        exit.setSize(width/4, height/8);
+        exit.setLocation(exit.getWidth() /2, diffBut.getY() + diffBut.getHeight() + exit.getHeight() /2);
 
         mainPanel.add(exit);
     }
@@ -146,10 +147,17 @@ public class MyFrame extends JFrame implements MouseListener {
 
         play.setFont(font);
 
-        play.setSize(getWidth()/4, getHeight()/8);
-        play.setLocation(getWidth()/2 + play.getWidth()/2, diffBut.getY() + diffBut.getHeight() + play.getHeight()/2);
+        play.setSize(width/4, height/8);
+        play.setLocation(width/2 + play.getWidth() /2, diffBut.getY() + diffBut.getHeight() + play.getHeight() /2);
 
         mainPanel.add(play);
+    }
+
+    public void gameExit() {
+        getContentPane().remove(map);
+        getContentPane().setLayout(new BorderLayout());
+        backPanel.switchBackImage();
+        mainPanel.setVisible(true);
     }
 
     @Override
@@ -171,6 +179,12 @@ public class MyFrame extends JFrame implements MouseListener {
                         break;
                 }
             } else if (e.getSource().equals(play)) {
+                map = new Map(nameField.getText(), null, MyButton.Difficulty.valueOf(diffBut.getText()).ordinal(), this);
+                mainPanel.setVisible(false);
+                map.setOpaque(false);
+                getContentPane().setLayout(null);
+                backPanel.switchBackImage();
+                getContentPane().add(map);
             } else if (e.getSource().equals(exit)) {
                 System.exit(0);
             }
