@@ -1,7 +1,7 @@
 package PacMan;
 
 import Map.*;
-import Messages.Messages;
+import Messages.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -122,23 +122,23 @@ public class PacMan extends Component implements Runnable, KeyListener {
         switch (direction) {
             case 0:
                 Rectangle rectangle = new Rectangle(x-1, y, Map.imageSize, Map.imageSize);
-                if (map.wallRecs[y/Map.imageSize][(x-1)/Map.imageSize] != null)
-                    return !map.wallRecs[y / Map.imageSize][(x - 1) / Map.imageSize].intersects(rectangle);
+                if (map.getWallRecs()[y/Map.imageSize][(x-1)/Map.imageSize] != null)
+                    return !map.getWallRecs()[y / Map.imageSize][(x - 1) / Map.imageSize].intersects(rectangle);
                 break;
             case 1:
                 rectangle = new Rectangle(x+1, y, Map.imageSize, Map.imageSize);
-                if (map.wallRecs[y/Map.imageSize][(x+40+1)/Map.imageSize] != null)
-                    return !map.wallRecs[y/Map.imageSize][(x+40+1)/Map.imageSize].intersects(rectangle);
+                if (map.getWallRecs()[y/Map.imageSize][(x+40+1)/Map.imageSize] != null)
+                    return !map.getWallRecs()[y/Map.imageSize][(x+40+1)/Map.imageSize].intersects(rectangle);
                 break;
             case 2:
                 rectangle = new Rectangle(x, y-1, Map.imageSize, Map.imageSize);
-                if (map.wallRecs[(y-1)/Map.imageSize][x/Map.imageSize] != null)
-                    return !map.wallRecs[(y - 1) / Map.imageSize][x / Map.imageSize].intersects(rectangle);
+                if (map.getWallRecs()[(y-1)/Map.imageSize][x/Map.imageSize] != null)
+                    return !map.getWallRecs()[(y - 1) / Map.imageSize][x / Map.imageSize].intersects(rectangle);
                 break;
             case 3:
                 rectangle = new Rectangle(x, y+1, Map.imageSize, Map.imageSize);
-                if (map.wallRecs[(y+40+1)/Map.imageSize][x/Map.imageSize] != null)
-                    return !map.wallRecs[(y+40+1)/Map.imageSize][x/Map.imageSize].intersects(rectangle);
+                if (map.getWallRecs()[(y+40+1)/Map.imageSize][x/Map.imageSize] != null)
+                    return !map.getWallRecs()[(y+40+1)/Map.imageSize][x/Map.imageSize].intersects(rectangle);
                 break;
         }
         return true;

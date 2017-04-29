@@ -84,7 +84,7 @@ public class Ghost extends Component implements Runnable {
         for (int i = 0; i < Map.height; i++) {
             for (int j = 0; j < Map.width; j++) {
                 if (!(i == y && j == x))
-                    wallRecs[i][j] = map.wallRecs[i][j];
+                    wallRecs[i][j] = map.getWallRecs()[i][j];
             }
         }
     }

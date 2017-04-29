@@ -10,9 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -33,10 +31,11 @@ public class Map extends JPanel implements KeyListener {
     public static boolean isPlaying;
     public static int level;
     private int pacPhase = 0;
+    private int pacPhaseControl = 0;
     private JLabel healthLabel;
     private JLabel diffLabel;
 
-    public Rectangle[][] wallRecs;
+    private Rectangle[][] wallRecs;
 
     private Font labelFont;
 
@@ -45,10 +44,13 @@ public class Map extends JPanel implements KeyListener {
 
         gameListener.checkIntersect();
 
-        if (pacPhase == 3)
-            pacPhase = 0;
-        else
+        pacPhaseControl++;
+        if (pacPhaseControl % 5 == 0) {
+            pacPhaseControl = 0;
             pacPhase++;
+            if (pacPhase == 3)
+                pacPhase = 0;
+        }
 
         repaint();
     });
@@ -204,6 +206,10 @@ public class Map extends JPanel implements KeyListener {
 
         add(healthLabel);
         add(diffLabel);
+    }
+
+    public Rectangle[][] getWallRecs() {
+        return wallRecs;
     }
 
     private void exit() {
