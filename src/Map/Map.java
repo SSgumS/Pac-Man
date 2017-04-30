@@ -40,10 +40,6 @@ public class Map extends JPanel implements KeyListener {
     private Font labelFont;
 
     private Timer paintTimer = new Timer(16, e -> {
-        gameListener.checkEnd();
-
-        gameListener.checkIntersect();
-
         pacPhaseControl++;
         if (pacPhaseControl % 5 == 0) {
             pacPhaseControl = 0;
@@ -53,6 +49,10 @@ public class Map extends JPanel implements KeyListener {
         }
 
         repaint();
+
+        gameListener.checkEnd();
+
+        gameListener.checkIntersect();
     });
     private Timer startTimer = new Timer(1000, e -> {
         pacManThread = new Thread(pacMan);
@@ -210,6 +210,10 @@ public class Map extends JPanel implements KeyListener {
 
     public Rectangle[][] getWallRecs() {
         return wallRecs;
+    }
+
+    public Ghost[] getGhosts() {
+        return ghosts;
     }
 
     private void exit() {

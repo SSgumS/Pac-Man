@@ -30,7 +30,7 @@ public class PacMan extends Component implements Runnable, KeyListener {
 
         this.health = health;
 
-        rectangle = new Rectangle(x, y, Map.imageSize, Map.imageSize);
+        rectangle = new Rectangle(x - 5, y - 5, Map.imageSize - 10, Map.imageSize - 10);
 
         addKeyListener(this);
     }
@@ -150,23 +150,23 @@ public class PacMan extends Component implements Runnable, KeyListener {
                 if (x > 0) x--;
                 else x = Map.width*Map.imageSize - Map.imageSize;
                 setLocation(x, y);
-                rectangle = new Rectangle(x, y, Map.imageSize, Map.imageSize);
+                rectangle = new Rectangle(x - 5, y - 5, Map.imageSize - 10, Map.imageSize - 10);
                 break;
             case 1:
                 if (x < Map.width*Map.imageSize - Map.imageSize - 2) x++;
                 else x = 0;
                 setLocation(x, y);
-                rectangle = new Rectangle(x, y, Map.imageSize, Map.imageSize);
+                rectangle = new Rectangle(x - 5, y - 5, Map.imageSize - 10, Map.imageSize - 10);
                 break;
             case 2:
                 y--;
                 setLocation(x, y);
-                rectangle = new Rectangle(x, y, Map.imageSize, Map.imageSize);
+                rectangle = new Rectangle(x - 5, y - 5, Map.imageSize - 10, Map.imageSize - 10);
                 break;
             case 3:
                 y++;
                 setLocation(x, y);
-                rectangle = new Rectangle(x, y, Map.imageSize, Map.imageSize);
+                rectangle = new Rectangle(x - 5, y - 5, Map.imageSize - 10, Map.imageSize - 10);
                 break;
         }
     }

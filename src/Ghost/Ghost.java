@@ -21,6 +21,7 @@ public class Ghost extends Component implements Runnable {
     private int delayTime;
     private int direction; //0: left 1:right 2:up 3:down
     private boolean[] ableDirs = new boolean[4];
+    private boolean[] bannedDirs = new boolean[4];
     private boolean mustChangeDir;
     public Rectangle rectangle;
     private boolean isEaten = false;
@@ -94,7 +95,8 @@ public class Ghost extends Component implements Runnable {
         while (Map.isPlaying) {
             if (x%40 == 0 && y%40 == 0) {
                 setAbleDirs();
-                mustChangeDir = !ableDirs[direction];
+                mustChangeDir = direction == 4 || !ableDirs[direction];
+                checkGhost();
                 try {
                     moveMode.invoke(this);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -126,6 +128,48 @@ public class Ghost extends Component implements Runnable {
         ableDirs[3] = wallRecs[(int) (rectangle.getCenterY() / Map.imageSize) + 1][(int) (rectangle.getCenterX() / Map.imageSize)] == null;
     }
 
+    private void checkGhost() {
+        for (int i = 0; i < 4; i++) {
+            bannedDirs[i] = false;
+
+            if (ableDirs[i]) {
+                int x = 0, y = 0;
+                switch (i) {
+                    case 0:
+                        x = -1;
+                        break;
+                    case 1:
+                        x = 1;
+                        break;
+                    case 2:
+                        y = -1;
+                        break;
+                    case 3:
+                        y = 1;
+                        break;
+                }
+
+                for (int j = 0; j < 4; j++) {
+                    for (int k = -1; k < 2; k++) {
+                        for (int l = 1; l < 3; l++) {
+                            if (x == 0) {
+                                if ((int) (map.getGhosts()[j].rectangle.getCenterX()/Map.imageSize) == (int) (rectangle.getCenterX()/Map.imageSize) + k && (int) (map.getGhosts()[j].rectangle.getCenterY()/Map.imageSize) == (int) (rectangle.getCenterY()/Map.imageSize) + y*l) {
+                                    bannedDirs[i] = true;
+                                    if (direction == i) mustChangeDir = true;
+                                }
+                            } else {
+                                if ((int) (map.getGhosts()[j].rectangle.getCenterX()/Map.imageSize) == (int) (rectangle.getCenterX()/Map.imageSize) + x*l && (int) (map.getGhosts()[j].rectangle.getCenterY()/Map.imageSize) == (int) (rectangle.getCenterY()/Map.imageSize) + k) {
+                                    bannedDirs[i] = true;
+                                    if (direction == i) mustChangeDir = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void setMoveMode(int mode) {
         try {
             switch (mode) {
@@ -153,23 +197,26 @@ public class Ghost extends Component implements Runnable {
     private void find0() {
         int k = 0;
         for (int i = 0; i < 4; i++)
-            if (ableDirs[i]) k++;
-        int[] ables = new int[k];
-        int kk = 0;
-        for (int i = 0; i < 4; i++) {
-            if (ableDirs[i]) {
-                ables[kk] = i;
-                kk++;
+            if (ableDirs[i] && !bannedDirs[i]) k++;
+        if (k != 0) {
+            int[] ables = new int[k];
+            int kk = 0;
+            for (int i = 0; i < 4; i++) {
+                if (ableDirs[i] && !bannedDirs[i]) {
+                    ables[kk] = i;
+                    kk++;
+                }
             }
-        }
 
-        if (mustChangeDir)
-            direction = ables[(int) (Math.random() * ables.length)];
-        else {
-            int num = (int) (Math.random() * (ables.length + 2));
-            if (num < ables.length)
-                direction = ables[num];
-        }
+            if (mustChangeDir)
+                direction = ables[(int) (Math.random() * ables.length)];
+            else {
+                int num = (int) (Math.random() * (ables.length + 2));
+                if (num < ables.length)
+                    direction = ables[num];
+            }
+        } else
+            direction = 4;
     }
 
     private void find1() {
@@ -273,11 +320,18 @@ public class Ghost extends Component implements Runnable {
                         break;
                     else {
                         if ((int) (pacMan.rectangle.getCenterX()/Map.imageSize) == (int) (rectangle.getCenterX()/Map.imageSize) + x*j && (int) (pacMan.rectangle.getCenterY()/Map.imageSize) == (int) (rectangle.getCenterY()/Map.imageSize) + y*j) {
+                            bannedDirs[i] = true;
                             for (int k = 0; k < 4; k++) {
-                                if (ableDirs[k] && k != i)
+                                if (ableDirs[k] && !bannedDirs[k]) {
                                     direction = k;
+                                    break;
+                                }
                             }
                             pacManFound = true;
+                            try {
+                                if (!ableDirs[direction] || bannedDirs[direction])
+                                    direction = 4;
+                            } catch (ArrayIndexOutOfBoundsException ignored) {}
                             break;
                         }
                     }

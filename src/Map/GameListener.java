@@ -58,12 +58,12 @@ public class GameListener implements KeyEventDispatcher {
             switch (map.pacMan.getDirection()) {
                 case 0:
                 case 1:
-                    if (map.pacMan.rectangle.getCenterX() - (int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)*Map.imageSize == Map.imageSize/2)
+                    if (map.pacMan.rectangle.getCenterX() - (int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)*Map.imageSize + Map.imageSize/2 >= -Map.imageSize/8 || map.pacMan.rectangle.getCenterX() - (int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)*Map.imageSize + Map.imageSize/2 <= Map.imageSize/8)
                         map.map[(int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)][(int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)] = 0;
                     break;
                 case 2:
                 case 3:
-                    if (map.pacMan.rectangle.getCenterY() - (int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)*Map.imageSize == Map.imageSize/2)
+                    if (map.pacMan.rectangle.getCenterY() - (int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)*Map.imageSize + Map.imageSize/2 >= -Map.imageSize/8 || map.pacMan.rectangle.getCenterY() - (int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)*Map.imageSize + Map.imageSize/2 <= Map.imageSize/8)
                         map.map[(int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)][(int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)] = 0;
                     break;
             }
@@ -71,22 +71,34 @@ public class GameListener implements KeyEventDispatcher {
             switch (map.pacMan.getDirection()) {
                 case 0:
                 case 1:
-                    if (map.pacMan.rectangle.getCenterX() - (int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)*Map.imageSize == Map.imageSize/2) {
+                    if (map.pacMan.rectangle.getCenterX() - (int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)*Map.imageSize + Map.imageSize/2 >= -Map.imageSize/8 || map.pacMan.rectangle.getCenterX() - (int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)*Map.imageSize + Map.imageSize/2 <= Map.imageSize/8) {
                         map.map[(int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)][(int) (map.pacMan.rectangle.getCenterX()/Map.imageSize)] = 0;
                         map.pacMan.dispatchEvent(new GameEvent(map, Messages.STRONG));
                         for (int i = 0; i < 4; i++)
                             map.ghosts[i].dispatchEvent(new GameEvent(map, Messages.STRONG));
-                        strongTimer.start();
+                        if (strongTimer.isRunning()) {
+                            map.pacMan.dispatchEvent(new GameEvent(map, Messages.WEAK));
+                            map.pacMan.dispatchEvent(new GameEvent(map, Messages.WEAK));
+                            map.pacMan.dispatchEvent(new GameEvent(map, Messages.STRONG));
+                            strongTimer.restart();
+                        } else
+                            strongTimer.start();
                     }
                     break;
                 case 2:
                 case 3:
-                    if (map.pacMan.rectangle.getCenterY() - (int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)*Map.imageSize == Map.imageSize/2) {
+                    if (map.pacMan.rectangle.getCenterY() - (int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)*Map.imageSize + Map.imageSize/2 >= -Map.imageSize/8 || map.pacMan.rectangle.getCenterY() - (int) (map.pacMan.rectangle.getCenterY()/Map.imageSize)*Map.imageSize + Map.imageSize/2 <= Map.imageSize/8) {
                         map.map[(int) (map.pacMan.rectangle.getCenterY() / Map.imageSize)][(int) (map.pacMan.rectangle.getCenterX() / Map.imageSize)] = 0;
                         map.pacMan.dispatchEvent(new GameEvent(map, Messages.STRONG));
                         for (int i = 0; i < 4; i++)
                             map.ghosts[i].dispatchEvent(new GameEvent(map, Messages.STRONG));
-                        strongTimer.start();
+                        if (strongTimer.isRunning()) {
+                            map.pacMan.dispatchEvent(new GameEvent(map, Messages.WEAK));
+                            map.pacMan.dispatchEvent(new GameEvent(map, Messages.WEAK));
+                            map.pacMan.dispatchEvent(new GameEvent(map, Messages.STRONG));
+                            strongTimer.restart();
+                        } else
+                            strongTimer.start();
                     }
                     break;
             }
